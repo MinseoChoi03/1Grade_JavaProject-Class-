@@ -1,0 +1,40 @@
+import java.awt.Graphics;
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+
+public class MainScreen extends JFrame{
+	private Image screenImage;//screenImage 선언
+	private Graphics screenGraphic;//screenGraphic 선언
+
+	private ImageIcon exitButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/exitButtonEntered.png"));//오른쪽 위 나가기 버튼의 마우스를 올렸을 시 이미지
+	private ImageIcon exitButtonBasicImage = new ImageIcon(Main.class.getResource("../images/exitButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+
+	private ImageIcon startButtonEnteredImage = new ImageIcon(//시작하기 버튼의 마우스를 올렸을 때 이미지
+			Main.class.getResource("../images/startButtonEntered.png"));
+	private ImageIcon startButtonBasicImage = new ImageIcon(Main.class.getResource("../images/startButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+
+	private ImageIcon quitButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/quitButtonEntered.png"));//종료하기 버튼의 마우스를 올렸을 시 이미지
+	private ImageIcon quitButtonBasicImage = new ImageIcon(Main.class.getResource("../images/quitButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+
+	private ImageIcon AEButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/AEButtonEntered.png"));//기입장 쓰기 버튼의 마우스를 올렸을 시 이미지
+	private ImageIcon AEButtonBasicImage = new ImageIcon(Main.class.getResource("../images/AEButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+
+	private Image background = new ImageIcon(Main.class.getResource("../images/introbackground(title).jpg")).getImage();//첫 시작 화면의 배경화면 이미지
+	private JLabel menuBar = new JLabel(new ImageIcon(Main.class.getResource("../images/menuBar.png")));//메뉴바의 이미지
+
+	private JButton exitButton = new JButton(exitButtonBasicImage);//나가기 버튼의 이미지는 exitButtonBasicImage
+	private JButton startButton = new JButton(startButtonBasicImage);//시작하기 버튼의 이미지는 startButtonBasicImage
+	private JButton quitButton = new JButton(quitButtonBasicImage);//종료하기 버튼의 이미지는 quitButtonBasicImage
+	private JButton AEButton = new JButton(AEButtonBasicImage);//기입장 쓰기 버튼의 이미지는 AEButtonBasicImage
+
+	private int mouseX, mouseY;//마우스X와 마우스Y int 변수 선언
+	
+	public MainScreen() {
+		
+	}
+}

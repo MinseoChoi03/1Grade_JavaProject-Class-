@@ -1,0 +1,362 @@
+package SaveMoney;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+
+private Image screenImage;//screenImage 선언
+private Graphics screenGraphic;//screenGraphic 선언
+
+private ImageIcon exitButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/exitButtonEntered.png"));//오른쪽 위 나가기 버튼의 마우스를 올렸을 시 이미지
+private ImageIcon exitButtonBasicImage = new ImageIcon(Main.class.getResource("../images/exitButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+
+private ImageIcon startButtonEnteredImage = new ImageIcon(//시작하기 버튼의 마우스를 올렸을 때 이미지
+		Main.class.getResource("../images/startButtonEntered.png"));
+private ImageIcon startButtonBasicImage = new ImageIcon(Main.class.getResource("../images/startButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+
+private ImageIcon quitButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/quitButtonEntered.png"));//종료하기 버튼의 마우스를 올렸을 시 이미지
+private ImageIcon quitButtonBasicImage = new ImageIcon(Main.class.getResource("../images/quitButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+
+private ImageIcon AEButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/AEButtonEntered.png"));//기입장 쓰기 버튼의 마우스를 올렸을 시 이미지
+private ImageIcon AEButtonBasicImage = new ImageIcon(Main.class.getResource("../images/AEButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+
+private Image background = new ImageIcon(Main.class.getResource("../images/introbackground(title).jpg")).getImage();//첫 시작 화면의 배경화면 이미지
+private JLabel menuBar = new JLabel(new ImageIcon(Main.class.getResource("../images/menuBar.png")));//메뉴바의 이미지
+
+private JButton exitButton = new JButton(exitButtonBasicImage);//나가기 버튼의 이미지는 exitButtonBasicImage
+private JButton startButton = new JButton(startButtonBasicImage);//시작하기 버튼의 이미지는 startButtonBasicImage
+private JButton quitButton = new JButton(quitButtonBasicImage);//종료하기 버튼의 이미지는 quitButtonBasicImage
+private JButton AEButton = new JButton(AEButtonBasicImage);//기입장 쓰기 버튼의 이미지는 AEButtonBasicImage
+
+private int mouseX, mouseY;//마우스X와 마우스Y int 변수 선언
+
+public MainScreen() { //Test_test 생성자 메서드
+	setUndecorated(true);//꾸미기 보이기
+	setTitle("용돈기입장");//창을 띄웠을 시 창의 이름
+	setSize(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT);//창을 띄웠을 시 창의 크기
+	setResizable(false);//크기 재조정 불가
+	setLocationRelativeTo(null);//구성 요소를 기준으로 창 위치설정 불가
+	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//창을 닫을 수 있게 설정
+	setVisible(true);//창 보이기
+	setBackground(new Color(0, 0, 0, 0));//배경색 없음
+	setLayout(null);//기본 레이아웃
+	
+	exitButton.setBounds(930, 0, 40, 40);//나가기 버튼의 x축, y축, 밑변, 높이
+	exitButton.setBorderPainted(false);//버튼 테두리를 그리지 않음
+	exitButton.setContentAreaFilled(false);//버튼을 투명하게 하기 위해 false
+	exitButton.setFocusPainted(false);//버튼이 포커스(마우스가 올라간 상태) 시 생기는 테두리를 안 보이게 설정함
+	exitButton.addMouseListener(new MouseAdapter() {//메뉴바에 마우스리스너(마우스 이벤트를 받게 해줌)랑 마우스어댑터(마우스 동작할 때를 추적가능) 추가
+		@Override//나가기 버튼 관련 오버라이드 (라인 87~105)
+		public void mouseEntered(MouseEvent e) {//마우스가 나가기 버튼 안으로 들어왔을 경우
+			exitButton.setIcon(exitButtonEnteredImage);//나가기 버튼 모양을 exitButtonEnteredImage로 설정
+			exitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));//나가기 버튼에 마우스를 올렸을 시 손가락 모양이 됨
+			}//mouseEntered(MouseEvent e) 끝
+		@Override
+		public void mouseExited(MouseEvent e) {//마우스가 나가기 버튼 밖으로 나갔을 경우
+			exitButton.setIcon(exitButtonBasicImage);//나가기 버튼 모양을 기본 이미지로 교체함
+			exitButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));//나가기 버튼에서 마우스를 떼었을 시 다시 기본 마우스 모양으로 변함
+		}//mouseExited(MouseEvent e) 끝
+		@Override
+		public void mousePressed(MouseEvent e) {//나가기 버튼이 눌렸을 경우
+			try {//나가기 버튼을 눌렀을 시 1초뒤 창이 닫힘
+				Thread.sleep(1000);
+			}catch(InterruptedException ex) {//try문 안의 코드가 실행되지 않았으면 catch 문 안의 코드(예외처리)를 한다
+				ex.printStackTrace();//오류를 추적해 출력한다
+			}
+			System.exit(0);//눌렀을 시 창이 닫히게(종료) 하는 명령
+		}
+	});
+	add(exitButton);//나가기버튼을 추가한다
+	
+	startButton.setBounds(550, 200, 400, 100);//시작하기 버튼의 x축, y축, 밑변, 높이
+	startButton.setBorderPainted(false);//버튼 테두리를 그리지 않음
+	startButton.setContentAreaFilled(false);//버튼을 투명하게 하기 위해 false
+	startButton.setFocusPainted(false);//버튼이 포커스(마우스가 올라간 상태) 시 생기는 테두리를 안 보이게 설정함
+	startButton.addMouseListener(new MouseAdapter() {//시작버튼에 마우스리스너(마우스 이벤트를 받게 해줌)랑 마우스어댑터(마우스 동작할 때를 추적가능) 추가
+		@Override//시작 버튼 관련 오버라이드(라인 114~131)
+		public void mouseEntered(MouseEvent e) {//마우스가 시작 버튼으로 들어왔을 때
+			startButton.setIcon(startButtonEnteredImage);//시작버튼의 아이콘을 startButtonEnteredImage로 바꾼다
+			startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));//나가기 버튼에 마우스를 올렸을 시 손가락 모양이 됨
+			}//mouseEntered(MouseEvent e) 끝냄
+		@Override
+		public void mouseExited(MouseEvent e) {//마우스가 버튼 밖으로 나갔을 때
+			startButton.setIcon(startButtonBasicImage);//시작버튼의 아이콘 이미지를 기본 사진으로 변경함
+			startButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));//나가기 버튼에서 마우스를 떼었을 시 다시 기본 마우스 모양으로 변함
+		}//mouseExited(MouseEvent e) 끝냄
+		@Override
+		public void mousePressed(MouseEvent e) {//시작 버튼이 눌렸을 때
+			startButton.setVisible(false);//시작버튼 숨기기
+			quitButton.setVisible(false);//종료버튼 숨기기
+	
+			background = new ImageIcon(Main.class.getResource("../images/mainBackground.jpg")).getImage();
+			//시작하기 버튼을 눌렀을 시 메인 화면으로 이동된다. 
+		}
+	});
+	add(startButton);//시작하기 버튼 추가
+	
+	quitButton.setBounds(550, 330, 400, 100);//종료하기 버튼의 x축, y축, 밑변, 높이
+	quitButton.setBorderPainted(false);//버튼 테두리를 그리지 않음
+	quitButton.setContentAreaFilled(false);//버튼을 투명하게 하기 위해 false
+	quitButton.setFocusPainted(false);//버튼이 포커스(마우스가 올라간 상태) 시 생기는 테두리를 안 보이게 설정함
+	quitButton.addMouseListener(new MouseAdapter() {//나가기버튼에 마우스리스너(마우스 이벤트를 받게 해줌)랑 마우스어댑터(마우스 동작할 때를 추적가능) 추가
+		@Override//종료버튼 관련 오버라이드(라인 140~159)
+		public void mouseEntered(MouseEvent e) {//마우스가 종료버튼 안으로 들어왔을 때
+			quitButton.setIcon(quitButtonEnteredImage);//종료버튼 아이콘을 quitButtonEnteredImage로 설정
+			quitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));//나가기 버튼에 마우스를 올렸을 시 손가락 모양이 됨
+			}// mouseEntered(MouseEvent e) 끝
+		@Override
+		public void mouseExited(MouseEvent e) {//마우스가 종료버튼 범위 밖으로 나갔을 때
+			quitButton.setIcon(quitButtonBasicImage);//종료버튼 아이콘을 quitButtonBasicImage로 설정
+			quitButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));//나가기 버튼에서 마우스를 떼었을 시 다시 기본 마우스 모양으로 변함
+		}// mouseExited(MouseEvent e) 끝
+		@Override
+		public void mousePressed(MouseEvent e) {//종료버튼이 눌렸을 때 동작
+			try {
+				Thread.sleep(1000);//종료하기 버튼을 눌렀을 시 1초뒤 창이 닫힘
+			}catch(InterruptedException ex) {//try문 안의 코드가 실행되지 않았으면 catch 문 안의 코드(예외처리)를 한다
+				ex.printStackTrace();//오류를 추적해 출력한다
+			}
+			System.exit(0);//눌렀을 시 창이 닫히게(종료) 하는 명령
+		}
+	});
+	add(quitButton);//종료하기 버튼 추가
+	
+	AEButton.setBounds(550, 200, 400, 100);//기입장 쓰기 버튼의 x축, y축, 밑변, 높이
+	AEButton.setBorderPainted(false);//버튼 테두리를 그리지 않음
+	AEButton.setContentAreaFilled(false);//버튼을 투명하게 하기 위해 false
+	AEButton.setFocusPainted(false);//버튼이 포커스(마우스가 올라간 상태) 시 생기는 테두리를 안 보이게 설정함
+	AEButton.addMouseListener(new MouseAdapter() {//기입장 쓰기 버튼에 마우스리스너(마우스 이벤트를 받게 해줌)랑 마우스어댑터(마우스 동작할 때를 추적가능) 추가
+		@Override//기입장 쓰기 관련 (라인 166~345)
+		public void mouseEntered(MouseEvent e) {//마우스가 기입장 쓰기 버튼 안으로 들어왔을 때
+			AEButton.setIcon(AEButtonEnteredImage);//기입장 쓰기 버튼의 아이콘을 AEButtonEnteredImage로 설정함
+			AEButton.setCursor(new Cursor(Cursor.HAND_CURSOR));//기입장 쓰기 버튼에 버튼에 마우스를 올렸을 시 손가락 모양이 됨
+			}// mouseEntered(MouseEvent e) 끝
+		@Override
+		public void mouseExited(MouseEvent e) {//마우스가 기입장 쓰기버튼 밖으로 나갔을 때
+			AEButton.setIcon(AEButtonBasicImage);//기입장 쓰기 버튼의 아이콘을 기본 아이콘은로 설정함
+			AEButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));//나가기 버튼에서 마우스를 떼었을 시 다시 기본 마우스 모양으로 변함
+		}//mouseExited(MouseEvent e) 끝
+		@Override
+		public void mousePressed(MouseEvent e) {//기입장 쓰기 버튼이 눌렸을 때 
+			
+			JFrame frame = new JFrame(); //프레임 객체 추가
+			ArrayList<Word> w = new ArrayList<Word>();//ArrayList 객체 추가
+						
+			frame.setTitle("용돈기입장");//띄워지는 창의 이름
+			frame.setBounds(0, 0, 800, 800);//창의 크기
+			frame.setLocation(444, 0);//창이 띄워지는 위치
+			frame.setVisible(true);	//프레임을 보이게 한다	
+			Toolkit toolkit = Toolkit.getDefaultToolkit();//Toolkit(프로그램을 실행했을 때 맨 위에 올라오는 아이콘을 바꿔주는 용도로 썼음)객체 추가
+		    Image img = toolkit.getImage("a.jpg");//a.jpg는 객체 img가 불러올 사진
+		    frame.setIconImage(img);//프레임의 아이콘 사진을 img로 설정
+			frame.addWindowListener(new WindowHandler()); //WindowHandler 클래스를 추가했다
+			
+			
+			//메뉴바 만들기
+	        MenuBar mb=new MenuBar();//메뉴바 객체 추가	
+	    	Menu file=new Menu("파일(F)");//이름이 파일(F)인 버튼 추가
+	    	//file.setMnemomic('F'); 단축키 설정하려다가 만 거
+	    	MenuItem file_save=new MenuItem("저장(S)");//이름이 저장(S)인 버튼 추가
+	    	MenuItem file_open=new MenuItem("불러오기(L)");//이름이 불러오기(L)인 버튼 추가
+	    	file.add(file_save);//메뉴에 저장(S)버튼 추가
+	    	file.add(file_open);//메뉴에 불러오기(L)버튼 추가
+	    	mb.add(file);//메뉴바에 메뉴 추가
+			frame.setMenuBar(mb); //프레임에 메뉴바 추가
+			    	
+	    	//테이블 객체를 생성하고 초기값을 넣음
+	    	String header[]= {"날짜","내용","수입","지출","잔액"};//"날짜","내용","수입","지출","잔액"을 출력하고 이름이 헤더인 String 객체 추가
+	    	DefaultTableModel model=new DefaultTableModel(header, 0);//Defaulttablemodel(이건 표 추가,삭제가 JTable이 생성된 후에도 가능하게 해줌)객체 추가
+	    	JTable table=new JTable(model);//테이블 객체를 생성하는데 그 model을 넣어서
+	    	table.setFont(new Font("굴림", Font.PLAIN, 23));//테이블의 폰트는 굴림에 사이즈는 23pt로 설정함
+	    	table.setRowHeight(30);//셀의 높이를 30으로 설정
+	    	
+	    	JScrollPane scrollpane=new JScrollPane(table);//table 컴포넌트(구성요소)를 포함한 스크롤 페인 생성
+	    	scrollpane.getViewport().setBackground(Color.gray);//배경색깔이 회색이 되게 함
+	    	
+	    	//데이터를 입력받을 JTextField 생성
+	    	JPanel panel=new JPanel();
+	    	panel.setLayout(new BoxLayout(panel,BoxLayout.X_AXIS));	//패널의 레이아웃을 BoxLayout로 (또는 세로로 배치하며 프레임의 끝을 만나도 줄바꿈을 하지 않음)설정,AXIS는 정렬이고 X_니까 수평 정렬을 뜻함
+	    	
+	    	JTextField dateField=new JTextField(3); //헤더가 5개니까 필드도 5개 생성, dateField 객체 추가
+	    	JTextField conField=new JTextField(3);//conField 객체 추가
+	    	JTextField incField=new JTextField(3);//incField 객체 추가
+	    	JTextField outlField=new JTextField(3);//outField 객체 추가
+	    	JTextField valField=new JTextField(3);//valField 객체 추가   		    	
+	    	
+	    	panel.add(dateField);//페널에 날짜필드 추가
+	    	panel.add(conField);//패널에 내용필드 추가
+	    	panel.add(incField);//패널에 수입필드 추가
+	    	panel.add(outlField);//패널에 지출필드 추가
+	    	panel.add(valField);//패널에 잔고필드 추가
+	    	
+	    	conField.setFont(new Font("굴림", Font.PLAIN, 25));//내용필드의 폰트를 굴림으로 하고 사이즈는 25로 함
+	    	incField.setFont(new Font("굴림", Font.PLAIN, 25));//수입필드의 폰트를 굴림으로 하고 사이즈는 25로 함
+	    	outlField.setFont(new Font("굴림", Font.PLAIN, 25));//지출필드의 폰트를 굴림으로 하고 사이즈는 25로 함
+	    	
+	    	
+	    	dateField.setEditable(false);//dateField를 편집하지 못하게 함
+	    	valField.setEditable(false);//valField를 편집하지 못하게 함
+	    	
+	    	JButton addBtn=new JButton("추가");//이름이 추가인 버튼 생성
+	    	addBtn.setBackground(Color.pink);//추가버튼의 배경색은 분홍
+	    	addBtn.addActionListener(new ActionListener(){//추가버튼 동작은
+	    		//오버라이딩
+	    		public void actionPerformed(ActionEvent e) { //추가버튼을 누르면 실행될 내용
+	    			String inputStr[]=new String[5];//이름이 inputStr인 String 배열 선언
+	    			
+	    			inputStr[0] = getNow();//inpusStr의 0번째 인덱스엔 getNow() 메서드를 불러옴
+	    			inputStr[1] = conField.getText();//1번째 내용 인덱스엔 내용을 입력받게 함 
+	    			inputStr[2] = incField.getText();//2번쨰 수입 인덱스엔 수입을 입력받게 함
+	    			inputStr[3] = outlField.getText();//3번째 지출 인덱스엔 지출을 입력받게 함
+	    			inputStr[4] = incField.getText();//4번째 수입 인덱스엔 수입을 입력받게 함
+	    			model.addRow(inputStr);	//테이블모델인 model에 inputStr을 추가함
+	    			
+	    			
+	    		}
+	    		
+	    		public String getNow() { //현재날짜를 설정하는 메서드
+
+					Date today = new Date();//이름이 오늘인 날짜 객체를 생성함
+					SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd"); //이름이 date인 SimpleDateFormat 객체 선언 (yyyy는 년, MM은 월, dd는 날짜를 뜻함, -는 표시방법)
+					return date.format(today);//오늘의 날짜를 반환함
+					} //getNow() 끝
+	    		/*public int calBalance() { 
+	    			
+	    			balance = Integer.parseInt(valField.getText());
+	    			income = Integer.parseInt(incField.getText());
+	    			outlay = Integer.parseInt(outlField.getText());
+	    			
+	    			balance = ((balance + income) - outlay);
+	    			
+	    			return balance;
+	    		}
+	    		public String toString() {
+	    			String result;
+	    			result  = calBalance() + "";
+	    			return result;
+	    		}	*/
+				
+	    	});//추가버튼 동작관련 끝
+	    	JButton cancelBtn=new JButton("삭제");//삭제버튼 객체 추가
+	    	cancelBtn.setBackground(Color.pink);//삭제버튼 배경색은 분홍색
+	    	cancelBtn.addActionListener(new ActionListener() { //삭제버튼의 동작은
+	    		
+	    		public void actionPerformed(ActionEvent e) {//삭제버튼 누르면
+	    			if(table.getSelectedRow()==-1) { //선택된 셀이 있었다면 그 셀을 지우고
+	    				return;//돌려줌
+	    			}
+	    			else {//그게 아니고 그냥 버튼을 누른거면
+	    				model.removeRow(table.getSelectedRow());//마지막으로 추가된 셀 한 줄을 삭제함
+	    			}
+	    		}
+	    	});//actionPerformed(ActionEvent e) 끝
+	    	panel.add(addBtn); //패널에 추가버튼 넣기
+	    	panel.add(cancelBtn); //패널에 삭제버튼 넣기
+	    	
+	    	frame.add(scrollpane,BorderLayout.CENTER);//scrollpane은 중앙에 배치
+	    	frame.add(panel,BorderLayout.SOUTH); //BorderLayout은 남쪽(밑)에 배치
+	    	
+	   /*저장이랑 불러오기 기능 불완전함 */
+	    file_save.addActionListener(new ActionListener() { //저장하기 실행 시
+				
+		public void actionPerformed(ActionEvent e) {//저장하기 버튼의 동작 관련
+				  // 어디다 저장할 건지 나오게 한다
+			JFileChooser fc = new JFileChooser(new File("c:\\"));//이름이 fc인 JFileChooser(주어진 File을 경로로 사용하여 JFileChooser를 구성함 ) 객체를 선언하는데, 이 때 처음 뜨는 위치는 씨 드라이브
+			fc.setDialogTitle("파일 저장하기");//뜨는 창 제목은 파일 저장하기
+			int result = fc.showSaveDialog(null);//변수 result는 이제  FileChooser의 팝업을 보여주는 용도로 사용될 것이다
+			// 파일 선택에 성공한 경우
+			if(result == JFileChooser.APPROVE_OPTION)//경로를 잡고(result를 쓴 이유는 경로를 저 창에서 잡으니까) save를 누르면
+				{					        
+					File file = fc.getSelectedFile();
+					// 선택한 파일을 저장한다	
+					try {//try catch문
+						//파일을 열어 그 파일의 모든 리스트를 출력한다. 이름이 fw인 bufferWriter 객체를 선언하는데, 확장자는 .dat인 파일로 저장됨
+						BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.getPath() + ".dat")));
+					for(int i = 0; i < w.size(); i++)//i는 0부터 입력된 내용의 길이까지 반복해서
+						{
+							fw.write(w.get(i).getDate()+ ":" +w.get(i).getContents()+ ":" +w.get(i).getIncome()+ ":" +w.get(i).getOutlay()+ ":" +w.get(i).getValance()+"\r\n");
+						    //BufferedWriter인 fw에 날짜:내용:수입:지출:잔액 을 쓰게 함
+						}
+						fw.close();//BufferedWriter인 fw를 닫음
+					}catch(Exception E) {//try문 안에 있는 코드에서 예외가 발생하면 
+						JOptionPane.showMessageDialog(null, E.getMessage());//에러메세지를 출력
+					}
+					}//if문 끝
+				}//저장하기 버튼의 동작 끝					
+			});//저장하기 버튼의 actionPerformed(ActionEvent e) 끝
+		}//기입장 쓰기 버튼이 눌렸을 때 끝		
+	});//기입장 쓰기 끝
+	add(AEButton);//기입장 쓰기 버튼 추가
+	
+	/*위에 쓰면 나가기 버튼이 가려지기 때문에 아래쪽에 쓰게 됨.*/
+	menuBar.setBounds(0, 0, 970, 30);//메뉴바의 위치 설정
+	menuBar.addMouseListener(new MouseAdapter() {//메뉴바에 마우스 리스너랑 마우스 어댑터 추가 
+		@Override//메뉴바 동작 관련 오버라이드
+		public void mousePressed(MouseEvent e) {//메뉴바가 눌렸을 경우
+			mouseX = e.getX();//마우스가 올려졌을 시 X좌표를 얻어온다
+			mouseY = e.getY();//마우스가 올려졌을 시 Y좌표를 얻어온다
+		}//메뉴바가 눌렸을 경우 끝
+	});//addMouseListener(new MouseAdapter() 끝
+	menuBar.addMouseMotionListener(new MouseMotionAdapter(){ //메뉴바의 마우스 동작은
+		@Override
+		public void mouseDragged(MouseEvent e) {//마우스를 드래그 했을시 나타나는 이벤트
+			int x = e.getXOnScreen();//드래그 했을 시 스크린에 X좌표를 가져올 수 있게 한다
+			int y = e.getYOnScreen();//드래그 했을 시 스크린에 Y좌표를 가져올 수 있게 한다
+			setLocation(x - mouseX, y - mouseY);//메뉴바를 누르고 드래그 할시 프로그램의 실행 창을 마우스의 좌표에 따라 움직일 수 있게 한다.
+		}
+	});
+	add(menuBar);//메뉴바 추가
+
+	Music introMusic = new Music("introMusic.mp3", true); //첫 화면에 음악 추가
+	introMusic.start();//프로그램 실행 시 음악이 시작된다
+
+}//Test_test 생성자메서드 끝
+
+public void paint(Graphics g) {//그래픽 g를 매개변수로 하는 페인트 메서드 선언(화면을 그려주는 메서드)
+	screenImage = createImage(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT);//스크린 이미지의 크기는 메인에 선언된 WIDTH와 HEIGHT
+	screenGraphic = screenImage.getGraphics();//screenImage를 이용해 Graphics객체를 얻어 온다
+	screenDraw(screenGraphic);//screenGraphic에 어떠한 그림을 그려준다.
+	g.drawImage(screenImage, 0, 0, null);//screenImage를 (0,0)의 위치에 그려준다
+}//paint(Graphics g) 끝
+
+public void screenDraw(Graphics g) {//그래픽 g를 매개변수로 하는 screenDraw 메서드 선언
+	g.drawImage(background, 0, 0, null);//background이미지를 screenImage에 그려준다.
+	paintComponents(g);//JLabel같은 다른 것을 JFrame에 추가 할 수 있도록 만들어주는 명령어
+	this.repaint();//다시 paint메서드를 불러온다
+}//screenDraw(Graphics g) 끝
+}//Test_test 끝
+
+

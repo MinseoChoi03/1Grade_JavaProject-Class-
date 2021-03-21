@@ -1,0 +1,56 @@
+package SaveMoney;
+
+import java.io.BufferedInputStream;//효율성을 위하여 입력시에 버퍼링을 한다.
+import java.io.File;//파일 클래스는 파일과 디렉터리 경로 이름을 추상적으로 표현한 것이다. 경로 이름은 절대적이거나 상대적일 수 있다.
+import java.io.FileInputStream;//일에 데이터를 쓰는 데 사용되는 입력 스트림이다.
+
+import javazoom.jl.player.Player;//오디오 스트림 재생을위한 간단한 플레이어를 구현
+
+public class Music extends Thread{//스레드(동시에 여러 작업을 할수있게 함)를 상속받는 뮤직 클래스
+	
+	private Player player;//player를 private로 선언
+	private boolean isLoop;//isLoop를 private로 선언
+	private File file;//이름이 file인 File(파일과 폴더에 대한 다양한 기능을 제공)을 private로 선언
+	private FileInputStream fis;//이름이 fis인 FileInputStream(바이트형식의 데이터를 읽고 씀)를 private로 선언
+	private BufferedInputStream bis;//이름이 bis인 BufferedInputStream(보조 스트림)을 선언
+
+	
+	public Music(String name , boolean isLoop) {//Music의 생성자 메서드
+		try {//try catch문
+			
+			this.isLoop = isLoop;//외부로부터 받은 isLoop를 this.isLoop에 넣음
+			file = new File(Main.class.getResource("../music/" + name).toURI());//
+			fis = new FileInputStream(file);//이름이 fis인 FileInputStream(file) 객체 생성
+			bis = new BufferedInputStream(fis);//이름이 bis인 BufferedInputStream(fis)객체 생성
+			player = new Player(bis);//이름이 palyer인  Player 객체 생성
+			
+		}catch(Exception e){//try문에서 예외발생시
+			System.out.println(e.getMessage());//에러 메세지 출력하기
+		}//catch문 끝
+	}//Music(String name , boolean isLoop) 끝
+	public int getTime() {// getTime() 메서드 선언
+		if(player == null) //
+			return 0;//
+			return player.getPosition();// player.getPosition() 반환
+	}// getTime() 메서드 끝
+	public void close() {//close() 메서드 선언
+		isLoop = false;//
+		player.close();//
+		this.interrupt();//
+	}//close()메서드 끝
+	
+	@Override
+	public void run() {//(Thread를 상속 받으면 무조건 사용해야 하는 변수)run()메서드 선언
+		try {//try catch문 
+			do {//do while문
+				player.play();//
+				fis = new FileInputStream(file);//이름이 fis인 FileInputStream 객체 생성
+				bis = new BufferedInputStream(fis);//이름이 bis인 BufferedInputStream 객체 생성
+				player = new Player(bis);//이름이 player인 Player 객체 생성
+			}while(isLoop);//
+		}catch(Exception e){//try문 안의 코드에서 예외발생 시
+			System.out.println(e.getMessage());//에러 메세지를 출력한다
+		}//catch문 끝
+	}//run 메서드 끝
+}//Music 클래스 끝
+
