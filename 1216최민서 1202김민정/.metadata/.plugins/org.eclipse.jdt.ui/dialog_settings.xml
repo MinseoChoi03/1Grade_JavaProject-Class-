@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
-	<item key="org.eclipse.jdt.ui.lastextjar" value="C:\Users\minse\Desktop\학교\java\JLayer1.0.1"/>
+	<item key="org.eclipse.jdt.ui.lastextjar" value="E:\1학년\java\JLayer1.0.1"/>
 	<item key="org.eclipse.jdt.ui.last.selected.jre.kind2" value="2"/>
 	<item key="org.eclipse.jdt.ui.last.selected.execution.enviroment" value="JavaSE-1.8"/>
 	<section name="org.eclipse.ltk.ui.refactoring.settings">
@@ -9,6 +9,7 @@
 		<item key="updateSimilarElements" value="false"/>
 		<item key="updateSimilarElementsMatchStrategy" value="1"/>
 		<item key="updateTextualMatches" value="false"/>
+		<item key="renameSubpackages" value="false"/>
 	</section>
 	<section name="GenerateConstructorUsingFieldsSelectionDialog">
 		<item key="OmitCallToSuper" value="false"/>

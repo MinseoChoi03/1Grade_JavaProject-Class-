@@ -40,21 +40,21 @@ public class MainScreen extends JFrame{
 	private Image screenImage;//screenImage 선언
 	private Graphics screenGraphic;//screenGraphic 선언
 
-	private ImageIcon exitButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/exitButtonEntered.png"));//오른쪽 위 나가기 버튼의 마우스를 올렸을 시 이미지
-	private ImageIcon exitButtonBasicImage = new ImageIcon(Main.class.getResource("../images/exitButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+	private ImageIcon exitButtonEnteredImage = new ImageIcon(getClass().getResource("../images/exitButtonEntered.png"));//오른쪽 위 나가기 버튼의 마우스를 올렸을 시 이미지
+	private ImageIcon exitButtonBasicImage = new ImageIcon(getClass().getResource("../images/exitButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
 
 	private ImageIcon startButtonEnteredImage = new ImageIcon(//시작하기 버튼의 마우스를 올렸을 때 이미지
-			Main.class.getResource("../images/startButtonEntered.png"));
-	private ImageIcon startButtonBasicImage = new ImageIcon(Main.class.getResource("../images/startButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+			getClass().getResource("../images/startButtonEntered.png"));
+	private ImageIcon startButtonBasicImage = new ImageIcon(getClass().getResource("../images/startButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
 
-	private ImageIcon quitButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/quitButtonEntered.png"));//종료하기 버튼의 마우스를 올렸을 시 이미지
-	private ImageIcon quitButtonBasicImage = new ImageIcon(Main.class.getResource("../images/quitButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+	private ImageIcon quitButtonEnteredImage = new ImageIcon(getClass().getResource("../images/quitButtonEntered.png"));//종료하기 버튼의 마우스를 올렸을 시 이미지
+	private ImageIcon quitButtonBasicImage = new ImageIcon(getClass().getResource("../images/quitButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
 
-	private ImageIcon AEButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/AEButtonEntered.png"));//기입장 쓰기 버튼의 마우스를 올렸을 시 이미지
-	private ImageIcon AEButtonBasicImage = new ImageIcon(Main.class.getResource("../images/AEButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
+	private ImageIcon AEButtonEnteredImage = new ImageIcon(getClass().getResource("../images/AEButtonEntered.png"));//기입장 쓰기 버튼의 마우스를 올렸을 시 이미지
+	private ImageIcon AEButtonBasicImage = new ImageIcon(getClass().getResource("../images/AEButtonBasic.png"));//마우스를 올리지 않았을 시 이미지
 
-	private Image background = new ImageIcon(Main.class.getResource("../images/introbackground(title).jpg")).getImage();//첫 시작 화면의 배경화면 이미지
-	private JLabel menuBar = new JLabel(new ImageIcon(Main.class.getResource("../images/menuBar.png")));//메뉴바의 이미지
+	private Image background = new ImageIcon(getClass().getResource("../images/introbackground(title).jpg")).getImage();//첫 시작 화면의 배경화면 이미지
+	private JLabel menuBar = new JLabel(new ImageIcon(getClass().getResource("../images/menuBar.png")));//메뉴바의 이미지
 
 	private JButton exitButton = new JButton(exitButtonBasicImage);//나가기 버튼의 이미지는 exitButtonBasicImage
 	private JButton startButton = new JButton(startButtonBasicImage);//시작하기 버튼의 이미지는 startButtonBasicImage
